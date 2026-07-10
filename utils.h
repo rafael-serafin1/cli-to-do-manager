@@ -1,0 +1,94 @@
+#pragma once
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdarg.h>
+
+
+typedef enum status {
+    SUCCESS = 0,
+    FAILURE = 1
+} Status;
+
+typedef struct linked_list {
+    char *item;
+    struct linked_list* next;
+} *list;
+
+list initialize_list(void) {
+    list L = (list) malloc(sizeof(struct linked_list));
+
+    if (L == NULL)
+        return NULL;
+
+    L->item = NULL;
+    L->next = NULL;
+
+    return L;
+}
+
+/// @brief enum for message types
+typedef enum {
+    MSG_INFO,
+    MSG_WARNING,
+    MSG_ERROR,
+    MSG_SUCCESS,
+    MSG_DEBUG
+} MessageType;
+
+#define ANSI_RESET      "\x1b[0m"
+
+#define ANSI_RED        "\x1b[31m"
+#define ANSI_GREEN      "\x1b[32m"
+#define ANSI_YELLOW     "\x1b[33m"
+#define ANSI_BLUE       "\x1b[34m"
+#define ANSI_MAGENTA    "\x1b[35m"
+#define ANSI_CYAN       "\x1b[36m"
+#define ANSI_WHITE      "\x1b[37m"
+
+void message(MessageType type, const char *fmt, ...)
+{
+    const char *color;
+    const char *prefix;
+
+    switch (type)
+    {
+        case MSG_INFO:
+            color = ANSI_BLUE;
+            prefix = "[INFO]";
+            break;
+
+        case MSG_WARNING:
+            color = ANSI_YELLOW;
+            prefix = "[WARNING]";
+            break;
+
+        case MSG_ERROR:
+            color = ANSI_RED;
+            prefix = "[ERROR]";
+            break;
+
+        case MSG_SUCCESS:
+            color = ANSI_GREEN;
+            prefix = "[SUCCESS]";
+            break;
+
+        case MSG_DEBUG:
+            color = ANSI_MAGENTA;
+            prefix = "[DEBUG]";
+            break;
+
+        default:
+            color = ANSI_WHITE;
+            prefix = "[MESSAGE]";
+            break;
+    }
+
+    printf("%s%s ", color, prefix);
+
+    va_list args;
+    va_start(args, fmt);
+    vprintf(fmt, args);
+    va_end(args);
+
+    printf("%s\n", ANSI_RESET);
+}
