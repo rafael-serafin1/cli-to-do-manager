@@ -9,13 +9,22 @@
     #include <sys/stat.h>
 #endif
 
-#include "../utils.h"
+#include "../utils/utils.h"
 
 #define TODO "Todofile\0"
-#define CONFIG_FILE ".todo\\config\\config.bin\0"
-#define COUNTER_FILE ".todo\\config\\count.bin\0"
 
-#define __MAX_SIZE_BUFFER 2560
+#ifdef _WIN32
+    #define CONFIG_FILE ".todo\\config\\config.bin"
+    #define COUNTER_FILE ".todo\\config\\count.bin\0"
+    #define TODO_FILE ".todo\\Todofile\0"
+#else
+    #define CONFIG_FILE ".todo/config/config.bin"
+    #define COUNTER_FILE ".todo/config/count.bin\0"
+    #define TODO_FILE ".todo/Todofile\0"
+#endif
+
+
+#define __MAX_SIZE_BUFFER 32768
 #define __MIN_SIZE_BUFFER 256
 
 typedef enum {
@@ -63,17 +72,28 @@ void create_config_file() {
 __todo_config read_config_file() {
 start:
     FILE *cf = fopen(CONFIG_FILE, "rb");
+    __todo_config t;
     
     if (cf == NULL) {
-        fclose(cf);
+        message(MSG_ERROR, "No repository found. Use \'todo init\'.");
         create_config_file();
         goto start;
     }
 
-    __todo_config t;
     fread(&t, sizeof(__todo_config), 1, cf);
 
     fclose(cf);
-
     return t;
+}
+
+int _read_config_file(__todo_config *t) {
+    FILE *cf = fopen(CONFIG_FILE, "rb");
+
+    if (cf == NULL)
+        return 0;
+
+    fread(t, sizeof(*t), 1, cf);
+    fclose(cf);
+
+    return 1;
 }

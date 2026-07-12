@@ -1,10 +1,14 @@
 #pragma once
-#include "utils.h"
+#include "utils/utils.h"
 #define string const char*
+
+#ifndef MACROS_H
+#define MACROS_H
 
 Status _todo_help(list todo);
 Status _todo_version();
-Status _todo_config();
+Status _todo_init(char **argv);
+Status _todo_config(list flags);
 Status _todo_add(string todo);
 Status _todo_remove(string todo);
 Status _todo_check(string todo);
@@ -15,6 +19,7 @@ Status _todo_list();
 #define __TODO_CMDS         \
     X("help")               \
     X("version")            \
+    X("init")               \
     X("config")             \
     X("add")                \
     X("remove")             \
@@ -25,6 +30,7 @@ Status _todo_list();
 #define __TODO_CMDS_FUNC                \
     X("help", _todo_help(flags))        \
     X("version", _todo_version())       \
+    X("init", _todo_init(argv))         \
     X("config", _todo_config(flags))    \
     X("add", _todo_add(task))           \
     X("remove", _todo_remove(task))     \
@@ -42,8 +48,9 @@ Status _todo_list();
 
 /// @brief FLAGS
 #define CONFIG_FLAGS                                                            \
-    X("--readable", "Makes Todofile be storaged as text file, not binary.")     \
-    X("--checkable", "Makes tasks in Todofile checkable.")                      \
-    X("--visible", "Makes Todofile storaged at any local.")                     
+    X("--readable", "-r", "Makes Todofile be storaged as text file, not binary.")     \
+    X("--checkable", "-c", "Makes tasks in Todofile checkable.")                      \
+    X("--visible", "-v", "Makes Todofile storaged at any local.")                     
 
 #pragma endregion
+#endif

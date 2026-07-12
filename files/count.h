@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 #include "config.h"
-#include "../utils.h"
+#include "../utils/utils.h"
 
 #define integer sizeof(int)
 
@@ -20,7 +20,7 @@ void create_counter_file() {
 }
 
 /// @brief Reads counter file 
-/// @return negative number if failed otherwise an positive number
+/// @return negative number if 'failed otherwise an positive number
 int read_counter_file() {
 start:
     FILE *f = fopen(COUNTER_FILE, "rb");

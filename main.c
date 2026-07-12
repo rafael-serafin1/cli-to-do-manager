@@ -3,43 +3,33 @@
 #include <string.h>
 
 #include "macros.h"
-#include "index.h"
-#include "utils.h"
+#include "utils/utils.h"
+#include "main/parse.h"
 
-#define __MIN_ARRAY_SIZE 256
-
-typedef struct __TODO_CLI__ {
-    char command[__MIN_ARRAY_SIZE];
-    list flags;
-} CLI;
-
-Status parse_command(CLI cli) {
-    string cmd = cli.command;
-    string task = "OPA!\0";
-    list flags = cli.flags;
-
-    #define X(use, fun)                \
-        if (strcmp(cmd, use) == 0) return fun;
-        __TODO_CMDS_FUNC
-    #undef X
-
-    message(MSG_ERROR, "Todofile (todo): Inexistent or incorrect command: \"%s\"\n", cmd);
-    return FAILURE;
-}
+extern int master(CLI cli);
+CLI *cli;            // variável global do arquivo 'parse.h'
 
 int main(int argc, char **argv) {
+    Status S;
+
     if (argc < 2) {
         message(MSG_ERROR, "No command provided. Correct usage -> \'todo <COMMAND>\'\n");
         return 1;
     }
 
-    CLI *cli = (CLI *) malloc(sizeof(CLI));   
+    cli = (CLI *) malloc(sizeof(CLI));   
     strcpy(cli->command, argv[1]);
 
     cli->flags = initialize_list();
 
-    parse_command(*cli);
+    S = parse_command(argc, argv);
+
+    message(MSG_DEBUG, "CLI -- Command: %s | Flags: %s", cli->command, cli->flags->item);
+
+    int exit = 0;
+    if (strcmp(cli->command, "config") == 0)
+        exit = master(*cli);   
 
     free(cli);
-    return 0;
+    return exit;
 }

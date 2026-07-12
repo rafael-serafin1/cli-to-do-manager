@@ -1,18 +1,10 @@
-#pragma once
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <stdarg.h>
 #include <locale.h>
 
-typedef enum status {
-    SUCCESS = 0,
-    FAILURE = 1
-} Status;
-
-typedef struct linked_list {
-    char *item;
-    struct linked_list* next;
-} *list;
+#include "utils.h"
 
 list initialize_list(void) {
     list L = (list) malloc(sizeof(struct linked_list));
@@ -26,14 +18,27 @@ list initialize_list(void) {
     return L;
 }
 
-/// @brief enum for message types
-typedef enum {
-    MSG_INFO,
-    MSG_WARNING,
-    MSG_ERROR,
-    MSG_SUCCESS,
-    MSG_DEBUG
-} MessageType;
+void add_to_list(list L, const char *flag) {
+    while (L->next != NULL)
+        L = L->next;
+
+    L->item = (char *) malloc(strlen(flag) + 1);
+    strcpy(L->item, flag);
+
+    L->next = (list) malloc(sizeof(list));
+
+    L->next->item = NULL;
+    L->next->next = NULL;
+}
+
+size_t list_items_count(list L) {
+    register size_t count = 0;
+    while (L != NULL) {
+        ++count;
+        L = L->next;
+    } 
+    return count;
+}
 
 #define ANSI_RESET      "\x1b[0m"
 

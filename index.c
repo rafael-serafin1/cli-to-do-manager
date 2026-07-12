@@ -1,7 +1,9 @@
-#pragma once
+#include <stdlib.h>
 
 #include "macros.h"
-#include "utils.h"
+#include "utils/utils.h"
+
+extern Status all_files(void);
 
 Status _todo_help(list todo) {
     message(MSG_INFO, "All commands avaliable to usage (todo <COMMAND>):");
@@ -14,6 +16,19 @@ Status _todo_help(list todo) {
 
 Status _todo_version() {
     message(MSG_INFO, "Todofile version: \'%s\'", __TODO_VERSION);
+    return SUCCESS;
+}
+
+Status _todo_init(char **argv) {
+    int exit = system("mkdir \".todo/\"");
+
+    if (exit != 0) {
+        message(MSG_ERROR, "Repository already exists.");
+        return FAILURE;
+    }
+
+    all_files();
+
     return SUCCESS;
 }
 

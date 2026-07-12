@@ -5,10 +5,10 @@ void __readable(void);
 void __checkable(void);
 void __visible(void);
 
-#define CONFIG_FLAGS_USAGE                      \
-    X("--readable", __readable())               \
-    X("--checkable", __checkable())             \
-    X("--visible", __visible())                 
+#define CONFIG_FLAGS_USAGE                              \
+    X("--readable", "-r", __readable())                 \
+    X("--checkable", "-c", __checkable())               \
+    X("--visible", "-v", __visible())                 
 
 void __readable(void) {
     __todo_config config = read_config_file();
