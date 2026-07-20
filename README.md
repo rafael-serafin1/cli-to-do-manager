@@ -134,9 +134,9 @@ todo config --readable --visible --checkable
 Default configuration
 
 ```
-Readable  : false
+Readable  : true
 Visible   : true
-Checkable : false
+Checkable : true
 ```
 
 ---
